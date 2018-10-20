@@ -1,0 +1,68 @@
+﻿<Window x:Class="GoPro_Video_Recovery.ErrorDisplay"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Recovery Errors" Height="349" Width="793" Background="#FF141414" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style x:Key="CellStyle" TargetType="DataGridCell">
+                <Setter Property="Padding" Value="5,0"/>
+                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="#FF1F1F1F"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="#FFC7C7C7"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="ColumnHeaderStyle" TargetType="DataGridColumnHeader">
+                <Setter Property="Background" Value="#FF2D2D30"/>
+                <Setter Property="Foreground" Value="#FFC7C7C7"/>
+                <Setter Property="Height" Value="22"/>
+                <Setter Property="Padding" Value="5,0,0,0"/>
+            </Style>
+            <Style x:Key="GoProButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="#FFB2B2B2"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid Background="{TemplateBinding Background}">
+                                <Border Name="border" BorderThickness="2" BorderBrush="#FF222222">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="RowStyle" TargetType="DataGridRow">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="Foreground" Value="#FFC7C7C7"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+        <TextBlock Text="One or more errors occurred during the recovery process:" Foreground="#FFC7C7C7" HorizontalAlignment="Center" FontSize="15" Margin="0,10,0,13"/>
+        <DataGrid ItemsSource="{Binding}" CellStyle="{StaticResource CellStyle}" ColumnHeaderStyle="{StaticResource ColumnHeaderStyle}" RowStyle="{StaticResource RowStyle}" SelectionUnit="Cell" AutoGenerateColumns="False" Background="#FF1B1B1C" Height="220" VerticalAlignment="Top" RowHeaderWidth="0" BorderBrush="#FF3F3F46" MinWidth="777">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=FileName, Mode=OneWay}" Header="File" Width="100"/>
+                <DataGridTextColumn Binding="{Binding Path=Stage, Mode=OneWay}" Header="Stage" Width="75"/>
+                <DataGridTextColumn Binding="{Binding Path=Reason, Mode=OneWay}" Header="Reason" Width="300"/>
+                <DataGridTextColumn Binding="{Binding Path=Path, Mode=OneWay}" Header="Path" Width="300"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Style="{StaticResource GoProButtonStyle}" IsDefault="True" Content="OK" Width="85" Height="25" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,11,12,0" FontFamily="Microsoft YaHei Light" Click="Button_Click"/>
+    </StackPanel>
+</Window>
