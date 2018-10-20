@@ -12,6 +12,7 @@
     </Window.DataContext>
     <Window.Resources>
         <ResourceDictionary>
+            <local:BooleanConverter x:Key="BooleanConverter"/>
             <Style x:Key="GoProButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="Foreground" Value="#FFB2B2B2"/>
@@ -36,10 +37,10 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <Button Content="BROWSE" Command="{Binding BrowseCommand}" Style="{StaticResource GoProButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="125" Margin="10,10,0,0" Height="33" FontFamily="Microsoft YaHei Light"/>
-        <Button Content="{Binding StartText}" Command="{Binding RecoverCommand}" Style="{StaticResource GoProButtonStyle}" Width="125" Height="33" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,10,0,0" FontFamily="Microsoft YaHei Light"/>
+        <Button Content="BROWSE" Command="{Binding BrowseCommand}" Style="{StaticResource GoProButtonStyle}" IsDefault="{Binding Valid, Converter={StaticResource BooleanConverter}}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="125" Margin="10,10,0,0" Height="33" FontFamily="Microsoft YaHei Light"/>
+        <Button Content="{Binding StartText}" Command="{Binding RecoverCommand}" Style="{StaticResource GoProButtonStyle}" IsDefault="{Binding Valid}" Width="125" Height="33" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,10,0,0" FontFamily="Microsoft YaHei Light"/>
         <TextBlock Text="{Binding Status}" Height="17" Margin="0,15.5,9,0" HorizontalAlignment="Center" Foreground="#FFAFAFAF" VerticalAlignment="Center"/>
         <ProgressBar Value="{Binding Progress}" Panel.ZIndex="0" Width="265" Height="15" Margin="10,78,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" Foreground="{Binding ProgressColor}"/>
-        <Border BorderBrush="#FF222222" Panel.ZIndex="1" BorderThickness="2" Width="265" Height="15" Margin="10,78,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Border BorderBrush="#FF222222" Panel.ZIndex="1" BorderThickness="1" Width="265" Height="15" Margin="10,78,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
     </Grid>
 </Window>

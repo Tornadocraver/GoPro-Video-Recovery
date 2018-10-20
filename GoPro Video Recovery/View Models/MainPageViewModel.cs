@@ -4,11 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -44,7 +46,7 @@ namespace GoPro_Video_Recovery
                 Dialog.Multiselect = false;
                 Dialog.InitialDirectory = Path.GetDirectoryName(Dialog.FileName);
                 Dialog.FileName = string.Empty;
-                Dialog.Title = "Select Good Video";
+                Dialog.Title = "Select A Sample Video";
                 result = Dialog.ShowDialog();
                 if (!result.HasValue || !result.Value)
                 {
@@ -94,10 +96,11 @@ namespace GoPro_Video_Recovery
         }
         #endregion
 
+        #region Recovery
         private async Task RecoverVideos(CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            Application.Current.Dispatcher.Invoke(() => { Running = true; Progress = 25.0; Status = "Analyzing good file..."; });
+            Application.Current.Dispatcher.Invoke(() => { Running = true; Progress = 25.0; Status = "Analyzing sample video..."; });
             int total = BadPaths.Count();
             ProcessResult analyze = await AnalyzeVideo(GoodPath, token);
             if (analyze.Success)
@@ -125,7 +128,7 @@ namespace GoPro_Video_Recovery
             else
                 Errors.Add(new Error(ErrorStage.Analysis, string.Join($":{Environment.NewLine}", (string[])analyze.Result), GoodPath));
             int errors = total - Errors.Count;
-            Application.Current.Dispatcher.Invoke(() => { Progress = 100.0; Status = $"Finished: {errors} video{(total > 1 || errors == 0 ? "s" : string.Empty)} recovered."; Valid = false; });
+            Application.Current.Dispatcher.Invoke(() => { Progress = 100.0; Status = $"Finished:  {errors} video{(total > 1 || errors == 0 ? "s" : string.Empty)} recovered."; Valid = false; });
         }
 
         private async Task<ProcessResult> AnalyzeVideo(string goodVideoPath, CancellationToken token)
@@ -151,7 +154,6 @@ namespace GoPro_Video_Recovery
             catch (OperationCanceledException exception) { throw exception; }
             catch (Exception exception) { return new ProcessResult(false, new string[] { "An error occurred while launching the analysis process", exception.ToString() }); }
         }
-
         private async Task<ProcessResult> RecoverVideo(string badVideoPath, string recoverCommand, CancellationToken token)
         {
             try
@@ -174,7 +176,6 @@ namespace GoPro_Video_Recovery
             catch (OperationCanceledException exception) { throw exception; }
             catch (Exception exception) { return new ProcessResult(false, new string[] { "An error occurred while launching the recovery process", exception.ToString() }); }
         }
-
         private async Task<ProcessResult> MuxVideo(string badVideoPath, string muxCommand, CancellationToken token)
         {
             try
@@ -197,6 +198,7 @@ namespace GoPro_Video_Recovery
             catch (OperationCanceledException exception) { throw exception; }
             catch (Exception exception) { return new ProcessResult(false, new string[] { "An error occurred while launching the muxing process", exception.ToString() }); }
         }
+        #endregion
 
         #region Variables
         private string[] BadPaths;
@@ -263,6 +265,19 @@ namespace GoPro_Video_Recovery
             set { valid = value; OnPropertyChanged("Valid"); }
         }
         #endregion
+    }
+
+    public class BooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return !(bool)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return !(bool)value;
+        }
     }
 
     static class ExtensionMethods
