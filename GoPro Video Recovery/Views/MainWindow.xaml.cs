@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 
 namespace GoPro_Video_Recovery
 {
@@ -10,6 +11,14 @@ namespace GoPro_Video_Recovery
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (((MainPageViewModel)DataContext).Running)
+                e.Cancel = true;
+            else
+                base.OnClosing(e);
         }
     }
 }
